@@ -1,48 +1,63 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
-<%--<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>--%>
-<html>
+<html lang="ru">
 <head>
-    <title>Meal list</title>
-    <style>
-        .normal {
-            color: green;
+    <title>Meals</title>
+</head>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Таблица</title>
+    <style type="text/css">
+        TABLE {
+            width: 500px; /* Ширина таблицы */
+            border-collapse: collapse; /* Убираем двойные линии между ячейками */
         }
-
-        .excess {
-            color: red;
+        TD, TH {
+            padding: 3px; /* Поля вокруг содержимого таблицы */
+            border: 1px solid black; /* Параметры рамки */
         }
     </style>
 </head>
 <body>
-<section>
-    <h3><a href="index.html">Home</a></h3>
-    <hr/>
-    <h2>Meals</h2>
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-        <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Calories</th>
-        </tr>
-        </thead>
-        <c:forEach items="${requestScope.meals}" var="meal">
-            <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
-            <tr class="${meal.excess ? 'excess' : 'normal'}">
-                <td>
-                        <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
-                        <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
-                        <%--${fn:replace(meal.dateTime, 'T', ' ')}--%>
-                        ${fn:formatDateTime(meal.dateTime)}
-                </td>
-                <td>${meal.description}</td>
-                <td>${meal.calories}</td>
-            </tr>
-        </c:forEach>
-    </table>
-</section>
+<h3><a href="index.html">Home</a></h3>
+<hr>
+<h2>Meals</h2>
+
+<table border="1">
+
+    <tr>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Calories</th>
+        <th></th>
+        <th></th>
+    </tr>
+
+    <c:forEach items="${meals}" var="meal">
+
+        <c:choose>
+            <c:when test="${meal.isExcess()}">
+                <tr style="color: red">
+                    <td>${meal.getDateTime() }</td>
+                    <td>${meal.getDescription()}</td>
+                    <td>${meal.getCalories()}</td>
+                    <td>${meal.isExcess()}</td>
+                </tr>
+            </c:when>
+            <c:otherwise>
+                <tr style="color: green">
+                    <td>${meal.getDateTime() }</td>
+                    <td>${meal.getDescription()}</td>
+                    <td>${meal.getCalories()}</td>
+                    <td>${meal.isExcess()}</td>
+                </tr>
+            </c:otherwise>
+        </c:choose>
+
+
+    </c:forEach>
+
+
+</table>
 </body>
 </html>
