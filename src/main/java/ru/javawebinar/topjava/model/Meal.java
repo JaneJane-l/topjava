@@ -11,9 +11,19 @@ import java.time.LocalTime;
 
 @Entity
 @Table(name = "meal")
-public class Meal extends AbstractBaseEntity {
+@NamedQueries({
+   @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id and m.user.id = :userId"),
+        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user  WHERE m.user.id = : userId ORDER BY m.id DESC"),
+        @NamedQuery(name = Meal.GET_BETWEEN, query = "SELECT m FROM Meal m WHERE m.user.id =:userId and m.dateTime >= :start  AND m.dateTime <:end ORDER BY m.id DESC"),
+})
 
-    @Column(name = "date_time", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
+public class Meal extends AbstractBaseEntity {
+    public static final String DELETE = "Meal.delete" ;
+    public static final String ALL_SORTED = "Meal.getAllSorted";
+    public static final String GET_BETWEEN = "Meal.getBetWeen";
+
+
+    @Column(name = "date_time", nullable = false, columnDefinition = "timestamp default now()", updatable = true)
     @NotNull
     private LocalDateTime dateTime;
 
@@ -22,11 +32,13 @@ public class Meal extends AbstractBaseEntity {
     private String description;
 
     @Column(name = "calories", nullable = false, columnDefinition = "int default 2000")
-    @NotEmpty
+
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    //@Column(name = "user_id")
+    @JoinColumn (name = "user_id", nullable = false)
+    @NotNull
+    //@Column(name = "user_id", joinColumns = @JoinColumn(name= "id"))
     private User user;
 
     public Meal() {
